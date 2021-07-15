@@ -1,0 +1,9 @@
+{
+	"name": "GloADFdemo",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "cf7b6124-6a53-4c7c-8444-d39b4e76f5f7",
+		"tenantId": "c160a942-c869-429f-8a96-f8c8296d57db"
+	}
+}
