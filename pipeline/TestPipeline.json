@@ -55,7 +55,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "testfile",
+						"referenceName": "DestinationFile",
 						"type": "DatasetReference"
 					}
 				]
