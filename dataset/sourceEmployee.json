@@ -18,18 +18,23 @@
 		},
 		"schema": [
 			{
+				"name": "PersonID",
 				"type": "String"
 			},
 			{
+				"name": "LastName",
 				"type": "String"
 			},
 			{
+				"name": "FirstName",
 				"type": "String"
 			},
 			{
+				"name": "Address",
 				"type": "String"
 			},
 			{
+				"name": "City",
 				"type": "String"
 			}
 		]
