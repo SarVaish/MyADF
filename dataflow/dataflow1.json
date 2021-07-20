@@ -26,10 +26,13 @@
 					"name": "Myview"
 				},
 				{
-					"name": "MyDerivedColumn"
+					"name": "IntegerPersonID"
+				},
+				{
+					"name": "Fullname"
 				}
 			],
-			"script": "source(output(\n\t\tPersonID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddress as string,\n\t\tCity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> EmployeeExcel\nEmployeeExcel select(mapColumn(\n\t\tFromSelectPersonID = PersonID,\n\t\tFromSelectLastName = LastName,\n\t\tFromSelectFirstName = FirstName,\n\t\tFromSelectAddress = Address,\n\t\tFromSelectCity = City\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Myview\nMyview derive(FullName = concat(FromSelectFirstName, FromSelectLastName)) ~> MyDerivedColumn\nMyDerivedColumn sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tPersonID as integer,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddress as string,\n\t\tCity as string,\n\t\tFullname as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tPersonID = FromSelectPersonID,\n\t\tLastName = FromSelectLastName,\n\t\tFirstName = FromSelectFirstName,\n\t\tAddress = FromSelectAddress,\n\t\tCity = FromSelectCity,\n\t\tFullname = FullName\n\t)) ~> MyOutput"
+			"script": "source(output(\n\t\tPersonID as string,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddress as string,\n\t\tCity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> EmployeeExcel\nEmployeeExcel select(mapColumn(\n\t\tFromSelectPersonID = PersonID,\n\t\tFromSelectLastName = LastName,\n\t\tFromSelectFirstName = FirstName,\n\t\tFromSelectAddress = Address,\n\t\tFromSelectCity = City\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Myview\nMyview derive(ToPersonID = toInteger(FromSelectPersonID)) ~> IntegerPersonID\nIntegerPersonID derive(Fullname = concat(FromSelectFirstName, FirstSelectLastname)) ~> Fullname\nFullname sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tPersonID as integer,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddress as string,\n\t\tCity as string,\n\t\tFullname as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tPersonID = FromSelectPersonID,\n\t\tLastName = FromSelectLastName,\n\t\tFirstName = FromSelectFirstName,\n\t\tAddress = FromSelectAddress,\n\t\tCity = FromSelectCity,\n\t\tFullname = FullName\n\t)) ~> MyOutput"
 		}
 	}
 }
