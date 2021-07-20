@@ -28,6 +28,10 @@
 			{
 				"name": "City",
 				"type": "varchar"
+			},
+			{
+				"name": "Fullname",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {
