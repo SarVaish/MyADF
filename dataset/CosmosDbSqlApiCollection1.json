@@ -1,0 +1,83 @@
+{
+	"name": "CosmosDbSqlApiCollection1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Sink",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"gamLayer": {
+					"type": "integer"
+				},
+				"recentContries": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"countryId": {
+								"type": "integer"
+							},
+							"lastAccessDate": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"preference": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"localeFileName": {
+								"type": "string"
+							},
+							"defaultChannelId": {
+								"type": "integer"
+							},
+							"defaultCountryId": {
+								"type": "integer"
+							},
+							"defaultLanguageId": {
+								"type": "integer"
+							},
+							"browseViewId": {
+								"type": "integer"
+							},
+							"dateViewId": {
+								"type": "integer"
+							},
+							"fontViewId": {
+								"type": "integer"
+							},
+							"isWelcomeWanted": {
+								"type": "boolean"
+							},
+							"isPrintAcknowledged": {
+								"type": "boolean"
+							}
+						}
+					}
+				},
+				"lastLoginDate": {
+					"type": "string"
+				},
+				"isActive": {
+					"type": "boolean"
+				},
+				"createDate": {
+					"type": "string"
+				},
+				"modifyDate": {
+					"type": "null"
+				}
+			}
+		},
+		"typeProperties": {
+			"collectionName": "user"
+		}
+	}
+}
