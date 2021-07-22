@@ -1,0 +1,30 @@
+{
+	"name": "ApiConnection",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "TestCosmosConnection",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"pref": {
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"surname": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		"typeProperties": {
+			"collectionName": "user"
+		}
+	}
+}
