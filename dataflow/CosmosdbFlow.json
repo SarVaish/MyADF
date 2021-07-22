@@ -1,0 +1,35 @@
+{
+	"name": "CosmosdbFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ApiConnection",
+						"type": "DatasetReference"
+					},
+					"name": "cosmosdbdataset"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ApiConnection",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flatdata"
+				},
+				{
+					"name": "derivedCol"
+				}
+			],
+			"script": "source(output(\n\t\tpref as (name as string, surname as string)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'document',\n\tsystemColumns: true) ~> cosmosdbdataset\ncosmosdbdataset foldDown(unroll(),\n\tmapColumn(\n\t\tpref = pref,\n\t\tid\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> flatdata\nflatdata derive(hashedName = sha2(256,lower(id))) ~> derivedCol\nderivedCol sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tpref as (name as string, surname as string)\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tpref,\n\t\tid = hashedName\n\t)) ~> sink1"
+		}
+	}
+}
