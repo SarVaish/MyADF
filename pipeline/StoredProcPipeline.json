@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[DemoStoredProcedure]"
+					"storedProcedureName": "[dbo].[DemoStored7Procedure]"
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureSqlDatabaseDemo",
