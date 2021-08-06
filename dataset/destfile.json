@@ -1,0 +1,19 @@
+{
+	"name": "destfile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "vaishlinkedservice",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "destinationfile.xlsx",
+				"container": "vaishcontainer"
+			}
+		},
+		"schema": []
+	}
+}
