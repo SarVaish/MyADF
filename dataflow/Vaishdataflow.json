@@ -12,7 +12,11 @@
 					"name": "VaishSourceFIle"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"name": "destsink"
+				}
+			],
 			"transformations": [
 				{
 					"name": "DerivedColumn1"
@@ -21,7 +25,7 @@
 					"name": "Aggregate1"
 				}
 			],
-			"script": "source(output(\n\t\tSystem as string,\n\t\t{Allocated Space (GB)} as string,\n\t\t{Used Space (GB)} as string,\n\t\t{Free Space (GB)} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> VaishSourceFIle\nVaishSourceFIle derive({Allocated Space (GB)} = toDouble({Allocated Space (GB)}),\n\t\t{Used Space (GB)} = toDouble({Used Space (GB)}),\n\t\t{Free Space (GB)} = toDouble({Free Space (GB)}),\n\t\tallocatedSpaceOriginal = {Allocated Space (GB)}) ~> DerivedColumn1\nDerivedColumn1 aggregate(groupBy(System),\n\t{Allocated Space (GB)} = max({Allocated Space (GB)})) ~> Aggregate1"
+			"script": "source(output(\n\t\tSystem as string,\n\t\t{Allocated Space (GB)} as string,\n\t\t{Used Space (GB)} as string,\n\t\t{Free Space (GB)} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> VaishSourceFIle\nVaishSourceFIle derive({Allocated Space (GB)} = toDouble({Allocated Space (GB)}),\n\t\t{Used Space (GB)} = toDouble({Used Space (GB)}),\n\t\t{Free Space (GB)} = toDouble({Free Space (GB)}),\n\t\tallocatedSpaceOriginal = {Allocated Space (GB)}) ~> DerivedColumn1\nDerivedColumn1 aggregate(groupBy(System),\n\t{Allocated Space (GB)} = max({Allocated Space (GB)})) ~> Aggregate1\nAggregate1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tstore: 'cache',\n\tformat: 'inline',\n\toutput: false,\n\tsaveOrder: 1) ~> destsink"
 		}
 	}
 }
