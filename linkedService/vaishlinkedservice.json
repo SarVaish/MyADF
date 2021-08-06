@@ -1,0 +1,19 @@
+{
+	"name": "vaishlinkedservice",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"connectionString": "DefaultEndpointsProtocol=https;AccountName=vaishstorageacc;",
+			"accountKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "vaishkeyvault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "VaishContainerConnection"
+			}
+		}
+	}
+}
