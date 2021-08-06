@@ -1,0 +1,10 @@
+{
+	"name": "vaishkeyvault",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://vaishkeyvault.vault.azure.net/"
+		}
+	}
+}
