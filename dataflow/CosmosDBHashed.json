@@ -10,6 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "sourcecosmosdb"
+				},
+				{
+					"dataset": {
+						"referenceName": "vaishdestinationCosmosDb",
+						"type": "DatasetReference"
+					},
+					"name": "destcosmosdb"
 				}
 			],
 			"sinks": [
@@ -24,9 +31,18 @@
 			"transformations": [
 				{
 					"name": "ToLowerCase"
+				},
+				{
+					"name": "upsertdata"
+				},
+				{
+					"name": "Join1"
+				},
+				{
+					"name": "selectaddest"
 				}
 			],
-			"script": "source(output(\n\t\tid as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tquery: 'select c.id from c',\n\tformat: 'documentQuery',\n\tsystemColumns: false) ~> sourcecosmosdb\nsourcecosmosdb derive(ToLowerID = lower(id)) ~> ToLowerCase\nToLowerCase sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tid = ToLowerID\n\t)) ~> DestinationCosmosDB"
+			"script": "source(output(\n\t\tid as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tquery: 'select c.id from c',\n\tformat: 'documentQuery',\n\tsystemColumns: false) ~> sourcecosmosdb\nsource(output(\n\t\tid as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tquery: 'select c.id from c',\n\tformat: 'documentQuery',\n\tsystemColumns: false) ~> destcosmosdb\nsourcecosmosdb derive(ToLowerID = lower(id),\n\t\thasheddata = sha2(256, lower(id))) ~> ToLowerCase\nJoin1 alterRow(upsertIf(isNull(destID))) ~> upsertdata\nToLowerCase, selectaddest join(hasheddata == destID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join1\ndestcosmosdb select(mapColumn(\n\t\tdestID = id\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> selectaddest\nupsertdata sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tformat: 'document',\n\tpartitionKey: ['/id'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tid = hasheddata\n\t)) ~> DestinationCosmosDB"
 		}
 	}
 }
