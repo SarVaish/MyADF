@@ -11,7 +11,7 @@
 			"type": "object"
 		},
 		"typeProperties": {
-			"collectionName": "navicontainer"
+			"collectionName": "VaishSourceCosmosdb"
 		}
 	}
 }
