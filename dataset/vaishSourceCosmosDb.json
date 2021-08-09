@@ -1,0 +1,17 @@
+{
+	"name": "vaishSourceCosmosDb",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "VaishCosmosDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {
+			"type": "object"
+		},
+		"typeProperties": {
+			"collectionName": "navicontainer"
+		}
+	}
+}

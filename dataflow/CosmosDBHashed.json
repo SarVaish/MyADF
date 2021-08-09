@@ -1,0 +1,32 @@
+{
+	"name": "CosmosDBHashed",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "vaishSourceCosmosDb",
+						"type": "DatasetReference"
+					},
+					"name": "sourcecosmosdb"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "vaishdestinationCosmosDb",
+						"type": "DatasetReference"
+					},
+					"name": "DestinationCosmosDB"
+				}
+			],
+			"transformations": [
+				{
+					"name": "ToLowerCase"
+				}
+			],
+			"script": "source(output(\n\t\tid as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tquery: 'select c.id from c',\n\tformat: 'documentQuery',\n\tsystemColumns: false) ~> sourcecosmosdb\nsourcecosmosdb derive(ToLowerID = lower(id)) ~> ToLowerCase\nToLowerCase sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tid = ToLowerID\n\t)) ~> DestinationCosmosDB"
+		}
+	}
+}
