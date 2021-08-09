@@ -40,9 +40,18 @@
 				},
 				{
 					"name": "selectaddest"
+				},
+				{
+					"name": "SelectSourcedata"
+				},
+				{
+					"name": "Rankondate"
+				},
+				{
+					"name": "filterfor1"
 				}
 			],
-			"script": "source(output(\n\t\tid as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tquery: 'select c.id from c',\n\tformat: 'documentQuery',\n\tsystemColumns: false) ~> sourcecosmosdb\nsource(output(\n\t\tid as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tquery: 'select c.id from c',\n\tformat: 'documentQuery',\n\tsystemColumns: false) ~> destcosmosdb\nsourcecosmosdb derive(ToLowerID = lower(id),\n\t\thasheddata = sha2(256, lower(id))) ~> ToLowerCase\nJoin1 alterRow(upsertIf(isNull(destID))) ~> upsertdata\nToLowerCase, selectaddest join(hasheddata == destID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join1\ndestcosmosdb select(mapColumn(\n\t\tdestID = id\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> selectaddest\nupsertdata sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tformat: 'document',\n\tpartitionKey: ['/id'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tid = hasheddata\n\t)) ~> DestinationCosmosDB"
+			"script": "source(output(\n\t\tcreatedate as string,\n\t\tid as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tquery: 'select c.id, c.createdate from c\\n',\n\tformat: 'documentQuery',\n\tsystemColumns: false) ~> sourcecosmosdb\nsource(output(\n\t\tid as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tquery: 'select c.id from c',\n\tformat: 'documentQuery',\n\tsystemColumns: false) ~> destcosmosdb\nSelectSourcedata derive(ToLowerID = lower(idsource),\n\t\thasheddata = sha2(256, lower(idsource)),\n\t\tcreatedatesource = toDate(createdatesource, 'dd-MM-yyyy')) ~> ToLowerCase\nJoin1 alterRow(upsertIf(isNull(destID))) ~> upsertdata\nfilterfor1, selectaddest join(hasheddata == destID,\n\tjoinType:'left',\n\tbroadcast: 'both')~> Join1\ndestcosmosdb select(mapColumn(\n\t\tdestID = id\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> selectaddest\nsourcecosmosdb select(mapColumn(\n\t\tcreatedatesource = createdate,\n\t\tidsource = id\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectSourcedata\nToLowerCase window(over(hasheddata),\n\tdesc(createdatesource, true),\n\trankonhasheddata = rank()) ~> Rankondate\nRankondate filter(rankonhasheddata==1) ~> filterfor1\nupsertdata sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tformat: 'document',\n\tpartitionKey: ['/id'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tid = hasheddata,\n\t\tCreateddate = createdatesource\n\t)) ~> DestinationCosmosDB"
 		}
 	}
 }
